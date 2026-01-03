@@ -1,0 +1,60 @@
+{
+    "Log": {
+        "Level": "debug"
+    },
+    "Services": [
+        {
+            "Name": "Hypixel-in",
+            "Listen": 25577,
+            "IPAccess": {
+                "Mode": ""
+            },
+            "Outbound": {
+                "Type": ""
+            }
+        }
+    ],
+    "Router": {
+        "DefaultOutbound": "Hypixel-out",
+        "Rules": [
+            {
+                "Type": "always",
+                "Rewrite": {
+                    "Minecraft": {
+                        "Hostname": "mc.hypixel.net",
+                        "Port": 25565
+                    }
+                },
+                "Sniff": "minecraft"
+            }
+        ]
+    },
+    "Outbounds": [
+        {
+            "Name": "Hypixel-out",
+            "TargetAddress": "mc.hypixel.net",
+            "TargetPort": 25565,
+            "Minecraft": {
+                "EnableHostnameRewrite": true,
+                "OnlineCount": {
+                    "Max": 1,
+                    "Online": -1,
+                    "EnableMaxLimit": true
+                },
+                "HostnameAccess": {
+                    "Mode": ""
+                },
+                "NameAccess": {
+                    "Mode": ""
+                },
+                "PingMode": "",
+                "MotdFavicon": "{DEFAULT_MOTD}",
+                "MotdDescription": "§d{NAME}§e, provided by §a§o{INFO}§r\n§c§lProxy for §6§n{HOST}:{PORT}§r"
+            },
+            "ProxyOptions": {
+                "Type": ""
+            }
+        }
+    ],
+    "Lists": {}
+}
