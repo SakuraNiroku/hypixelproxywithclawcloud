@@ -25,6 +25,6 @@ WORKDIR /app
 
 # 拷贝启动脚本
 COPY . .
-RUN chmod +x /entrypoint.sh
+RUN chmod +x entrypoint.sh
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
