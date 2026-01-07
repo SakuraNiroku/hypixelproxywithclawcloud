@@ -12,7 +12,7 @@ PUBLIC_KEY=$(grep PublicKey wgcf-profile.conf | cut -d " " -f 3)
 ADDRESS=$(grep Address wgcf-profile.conf | cut -d " " -f 3 | head -n 1)
 
 # 3. 生成 wireproxy 配置文件
-cat <<EOF > /warp/proxy.conf
+cat <<EOF > /app/proxy.conf
 [WG]
 SelfIP = $ADDRESS
 PrivateKey = $PRIVATE_KEY
@@ -26,7 +26,7 @@ EOF
 
 # 4. 启动 wireproxy (用户态 WireGuard 转 SOCKS5)
 echo "正在启动 SOCKS5 代理..."
-wireproxy -c /warp/proxy.conf &
+wireproxy -c /app/proxy.conf &
 
 # 5. 等待代理就绪并验证 IP
 sleep 5
