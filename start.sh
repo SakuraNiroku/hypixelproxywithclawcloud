@@ -8,7 +8,7 @@ cat <<EOF >> wgcf-profile.conf
 BindAddress = 127.0.0.1:25344
 EOF
 
-./wireproxy -c wgcf-profile.conf -d -s
+./wireproxy -c wgcf-profile.conf &
 
 echo "Waiting for WireProxy to start..."
 sleep 10
@@ -22,4 +22,4 @@ echo "Starting ZBProxy..."
 
 ./zbproxy &
 
-exec gost -L "ws://${GOST_AUTH}:80?path=/ws"
+exec gost -L "ws://${GOST_AUTH}@:80?path=/ws"
