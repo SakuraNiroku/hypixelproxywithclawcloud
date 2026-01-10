@@ -1,5 +1,4 @@
-FROM ubuntu:24.04
-
+FROM ubuntu:22.04
 ENV GOST_AUTH=admin:admin
 ENV DEBIAN_FRONTEND=noninteractive
 
