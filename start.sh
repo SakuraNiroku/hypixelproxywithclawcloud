@@ -8,11 +8,18 @@ cat <<EOF >> wgcf-profile.conf
 BindAddress = 127.0.0.1:25344
 EOF
 
-./wireproxy -c wgcf-profile.conf &
+./wireproxy -c wgcf-profile.conf -d -s
 
+echo "Waiting for WireProxy to start..."
 sleep 10
 
-curl -x socks5h://127.0.0.1:25344 https://www.cloudflare.com/cdn-cgi/trace
-curl -x socks5h://127.0.0.1:25344 https://ip.sb/
+echo "Testing connection through WireProxy..."
 
-./zbproxy
+curl -x socks5h://127.0.0.1:25344 https://www.cloudflare.com/cdn-cgi/trace
+curl -x socks5h://127.0.0.1:25344 https://api.ip.sb/geoip
+
+echo "Starting ZBProxy..."
+
+./zbproxy &
+
+exec gost -L "ws://${GOST_AUTH}:80?path=/ws"

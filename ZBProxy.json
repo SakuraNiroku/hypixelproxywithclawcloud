@@ -52,7 +52,9 @@
                 "MotdDescription": "§d{NAME}§e, provided by §a§o{INFO}§r\n§c§lProxy for §6§n{HOST}:{PORT}§r"
             },
             "ProxyOptions": {
-                "Type": ""
+                "Type": "socks5",
+                "Network": "tcp",
+                "Address": "127.0.0.1:25344"
             }
         }
     ],
