@@ -1,0 +1,11 @@
+:80 {
+    # 转发 WebSocket 到 GOST
+    handle /ws* {
+        reverse_proxy localhost:7861
+    }
+
+    # 其他所有流量给 Flask
+    handle {
+        reverse_proxy localhost:8080
+    }
+}

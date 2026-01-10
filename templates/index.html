@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Config Manager</title>
+    <style>
+        body { font-family: sans-serif; margin: 50px; line-height: 1.6; max-width: 600px; }
+        .section { margin-bottom: 20px; border: 1px solid #ddd; padding: 15px; border-radius: 8px; }
+        /* 默认隐藏操作区域 */
+        #actionArea { display: none; margin-top: 30px; border-top: 2px dashed #ccc; padding-top: 20px; }
+        .status-msg { font-size: 0.9em; color: #666; }
+        button { cursor: pointer; padding: 6px 12px; border-radius: 4px; border: 1px solid #999; }
+        input[type="password"] { padding: 5px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>配置中心</h1>
+
+  <p>现在IP：{{ ip }}</p>
+
+    <div class="section" style="background-color: #f4f4f4;">
+        <h2>🔐 访问授权</h2>
+        <input type="password" id="passwordInput" placeholder="请输入校验密码">
+        <button onclick="savePassword()">保存并解锁</button>
+        <button onclick="clearPassword()" style="background: #eee; border-color: #ccc;">清除存储</button>
+        <p class="status-msg" id="statusText">当前状态：未解锁</p>
+    </div>
+
+    <div id="actionArea">
+        <div class="section">
+            <h2>1. 获取配置文件</h2>
+            <button onclick="handleDownload()">点击下载</button>
+        </div>
+
+        <div class="section">
+            <h2>2. 上传配置文件</h2>
+            <input type="file" id="fileInput" accept=".json"> <br/>
+            <button onclick="handleUpload()" style="margin-top: 4px;" >上传并覆盖</button>
+        </div>
+
+        <div class="section">
+            <h2>3. 重启代理服务</h2>
+            <button onclick="handleRestart()" >重启代理</button>
+        </div>
+
+    </div>
+
+    <script>
+        const statusText = document.getElementById('statusText');
+        const actionArea = document.getElementById('actionArea');
+        const pwdInput = document.getElementById('passwordInput');
+
+        function updateUI() {
+            const savedPwd = localStorage.getItem('config_token');
+            if (savedPwd && savedPwd.trim() !== "") {
+                actionArea.style.display = 'block';
+                statusText.innerText = "当前状态：已解锁";
+                statusText.style.color = "green";
+                pwdInput.value = savedPwd;
+            } else {
+                actionArea.style.display = 'none';
+                statusText.innerText = "当前状态：未解锁";
+                statusText.style.color = "red";
+                pwdInput.value = "";
+            }
+        }
+
+        function savePassword() {
+            const pwd = pwdInput.value;
+            if (!pwd) {
+                alert("请输入密码后再保存");
+                return;
+            }
+            localStorage.setItem('config_token', pwd);
+            updateUI();
+        }
+
+        function clearPassword() {
+            localStorage.removeItem('config_token');
+            updateUI();
+        }
+
+        window.onload = updateUI;
+
+        function handleDownload() {
+            const token = localStorage.getItem('config_token');
+            window.location.href = `/download?token=${encodeURIComponent(token)}`;
+        }
+
+        async function handleUpload() {
+            const fileInput = document.getElementById('fileInput');
+            const token = localStorage.getItem('config_token');
+
+            if (fileInput.files.length === 0) {
+                alert("请先选择文件");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    headers: { 'Authorization': token },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    alert("上传成功！");
+                } else {
+                    const error = await response.json();
+                    alert("失败: " + (error.message));
+                }
+            } catch (err) {
+                alert("网络错误");
+            }
+        }
+
+        async function handleRestart() {
+            const token = localStorage.getItem('config_token');
+
+            try {
+                const response = await fetch('/restart', {
+                    method: 'GET',
+                    headers: { 'Authorization': token }
+                });
+
+                if (response.ok) {
+                    alert("代理服务已重启！");
+                } else {
+                    const error = await response.json();
+                    alert("失败: " + (error.message));
+                }
+            } catch (err) {
+                alert("网络错误");
+            }
+        }
+    </script>
+</body>
+</html>
