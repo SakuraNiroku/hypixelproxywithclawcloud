@@ -1,11 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
-ip=$(curl -s https://api.ip.sb/ip -A Mozilla)
-echo "Now IP address is: $ip"
-echo "Please make sure the IP address is different from the previous one. If not, restart the container."
+wgcf register --accept-tos
+wgcf generate
 
-TOKEN=${TOKEN}
-echo "Starting proxy with token: $TOKEN"
+cat <<EOF >> wgcf-profile.conf
+[Socks5]
+BindAddress = 127.0.0.1:25344
+EOF
 
-./proxy-linux -mode ws2tcp -l :25566 -t 127.0.0.1:25577 -token "$TOKEN" &
+./wireproxy -c wgcf-profile.conf &
+
+curl -x socks5h://127.0.0.1:25344 https://ipinfo.io/json
+curl -x socks5h://127.0.0.1:25344 https://www.cloudflare.com/cdn-cgi/trace
+curl -x socks5h://127.0.0.1:25344 https://ip.sb/
+
 ./zbproxy
