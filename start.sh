@@ -10,7 +10,8 @@ EOF
 
 ./wireproxy -c wgcf-profile.conf &
 
-curl -x socks5h://127.0.0.1:25344 https://ipinfo.io/json
+sleep 10
+
 curl -x socks5h://127.0.0.1:25344 https://www.cloudflare.com/cdn-cgi/trace
 curl -x socks5h://127.0.0.1:25344 https://ip.sb/
 
