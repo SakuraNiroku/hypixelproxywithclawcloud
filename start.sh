@@ -1,7 +1,7 @@
 #!/bin/bash
 
-wgcf register --accept-tos
-wgcf generate
+./wgcf register --accept-tos
+./wgcf generate
 
 cat <<EOF >> wgcf-profile.conf
 [Socks5]
