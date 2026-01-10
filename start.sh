@@ -15,8 +15,8 @@ sleep 10
 
 echo "Testing connection through WireProxy..."
 
-curl -x socks5h://127.0.0.1:25344 https://www.cloudflare.com/cdn-cgi/trace
-curl -x socks5h://127.0.0.1:25344 https://api.ip.sb/geoip
+curl -x -s socks5h://127.0.0.1:25344 https://www.cloudflare.com/cdn-cgi/trace
+curl -x -s socks5h://127.0.0.1:25344 https://api.ipify.org
 
 echo "Starting ZBProxy..."
 
